@@ -1,18 +1,21 @@
 package friendrequestopgave.repositories;
 
-import friendrequestopgave.models.Friend;
-import friendrequestopgave.models.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import java.util.*;
 
+import friendrequestopgave.models.Friend;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
-public interface FriendRepository extends JpaRepository<Friend,Integer> {
+public interface FriendRepository extends JpaRepository<Friend,Long> {
+    @Query(value = "SELECT * FROM friends WHERE status = ? AND sender = ?;", nativeQuery = true)
+    List<Friend> findFriendsByStatusForSender(String status, String name);
 
-    boolean existsByFirstUserAndSecondUser(User first, User second);
-
-    List<Friend> findByFirstUser(User user);
-    List<Friend> findBySecondUser(User user);
+    @Query(value = "SELECT * FROM friends WHERE status = ? AND receiver = ?;", nativeQuery = true)
+    List<Friend> findFriendsByStatusForReceiver(String status, String name);
 
 }
+
+
